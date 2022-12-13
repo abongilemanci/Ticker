@@ -1,0 +1,30 @@
+function outputData() {
+
+  const id = '1KqR3b9G4WKdgQp0M4zE5QB_aY0d-Fqa8DqmTZ9WKoM8';
+  const sheetName = 'data';
+  const ss = SpreadsheetApp.openById(id);
+  const sheet = ss.getSheetByName(sheetName);
+  const range = sheet.getDataRange()
+  const data = range.getValues();
+  const headings = data[0];
+  const rows = data.slice(1);
+  return (covObjects(rows, headings));
+}
+
+function covObjects(rows, headings){
+  const myObj = {};
+  const temp = rows.map((val)=>{
+    headings.forEach((heading, index)=>{
+      myObj[heading] = rows[index];
+    })
+    return myObj;
+  })
+  return temp;
+}
+function doGet(){
+  const output = JSON.stringify({
+    status: 'success',
+    data: outputData()
+  })
+  return ContentService.createTextOutput(output).setMimeType(ContentService.MimeType.JSON);
+}
